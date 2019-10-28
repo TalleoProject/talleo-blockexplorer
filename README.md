@@ -1,11 +1,10 @@
-# Bittorium block explorer (BTOR)
+# Talleo block explorer (TLO)
 
-This is the new version of the Bittorium block explorer, network status and pool lists. an online version is available here : https://bittorium.org/blockexplorer
+This is the new version of the Talleo block explorer, network status and pool lists. An online version is available here : https://explorer.talleo.org/
 
-**To devellop locally : you can spawn a local webserver and use and allow CORS (Cross origin ressource sharing) in your browser**
+**To develop locally : you can spawn a local webserver and use and allow CORS (Cross-origin resource sharing) in your browser**
 
  * Safari : Show development menu in menubar and disable multi origin restrictions
- * Chrome : https://chrome.google.com/webstore/detail/allow-control-allow-origi/nlfbmbojpeacfghkpbjhddihlkkiljbi
 
 
 
@@ -16,7 +15,7 @@ This is the new version of the Bittorium block explorer, network status and pool
   * [x] total emission with percentage
   * [x] total transactions
   * [x] show tx in mempool
-  * [ ] tx in mempool detail
+  * [x] tx in mempool detail
   * [x] show last found blocks
   * [x] price in usd/eur/btc
   * [ ] small difficulty graph for last 31 blocks

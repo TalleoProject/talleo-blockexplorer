@@ -30,7 +30,7 @@
 </div>
 <div class="cardpad card">
     <div class="card-header text-center">
-        <h2>Bittorium known pools list</h2>
+        <h2>Talleo known pools list</h2>
         <i id="pools_updated" class="fas fa-sync fa-spin"></i>
     </div>
     <div id="pool_div" class="card-body table-responsive">
@@ -397,7 +397,7 @@
             .done(function (data) {
                 if (data.hasOwnProperty('difficulty')) {
                     updateText('networkHashrate', getReadableHashRateString(data.difficulty / coinDifficultyTarget));
-                    $('#networkHashrate').attr('data-globalHR', data.difficulty.toString());
+                    $('#networkHashrate').attr('data-globalHR', (data.difficulty / coinDifficultyTarget).toString());
                     updateText('nextDifficulty', data.difficulty.toString());
                     $('#blockchainHeight').attr('data-height', data.network_height);
                     updateText('blockchainHeight', data.network_height);

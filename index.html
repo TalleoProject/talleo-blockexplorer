@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1">
-    <title>Bittorium network statistics and blockchain explorer</title>
+    <title>Talleo network statistics and blockchain explorer</title>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.6.3/jquery.timeago.min.js" integrity="sha256-3S5uFNXUTbSzidUyam/9OVgDhJ2Yx1rmb6F+Ju3/6WE=" crossorigin="anonymous"></script>
@@ -16,8 +16,8 @@
 <body>
     <header class="navbar navbar-expand-md navbar-dark fixed-top">
         <a class="navbar-brand" href="#" data-page="home.html">
-            <img class="logo-small img-fluid" src="images/64x64.png" alt="Bittorium logo">
-            Bittorium Explorer
+            <img class="logo-small img-fluid" src="images/64x64.png" alt="Talleo logo">
+            Talleo Explorer
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggler"
                 aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,10 @@
                     <a class="hot_link" href="#transaction" data-page="transaction.html" >transaction
                     </a>
                 </li>
+                <li style="display:none;">
+                    <a class="hot_link" href="#pool_transaction" data-page="pool_transaction.html">pool transaction
+                    </a>
+                </li>
             </ul>
             <div id="stats_updated"><i class="fas fa-sync fa-spin"></i></div>
         </div>
@@ -63,12 +67,13 @@
     </div>
 </div>
 <footer class="footer">
-    Block explorer for Bittorium : <a target="_blank" href="https://github.com/bittorium/bittorium-blockexplorer"><i
-        class="fab fa-github-square"></i> Bittorium explorer</a>
+    Block explorer for Talleo : <a target="_blank" href="https://github.com/TalleoProject/talleo-blockexplorer"><i
+        class="fab fa-github-square"></i> Talleo explorer</a>
     open sourced under the <a href="http://www.gnu.org/licenses/gpl-2.0.html">GPL</a>
 </footer>
 <div id="alert_placeholder"></div>
 <script>
+    jQuery.timeago.settings.strings.seconds = '%d seconds';
 
     $(function () {
         getLastMinedBlockHeader();
