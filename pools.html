@@ -236,7 +236,8 @@
                     hashrate = 'N/A'; // not synced
                     miners = 'N/A';
                     pending = 'N/A';
-                    if (row = document.getElementById("host-"+poolData[i].id) && row.parentElement.parentElement.id !== "out_rows"){
+                    row = document.getElementById("host-"+poolData[i].id);
+                    if (row && row.parentElement && row.parentElement.parentElement && row.parentElement.parentElement.id !== "out_rows"){
                       row.parentElement.remove();
                     }
                     if (document.getElementById("host-"+poolData[i].id)){
@@ -278,7 +279,7 @@
                 }
 
                 row = document.getElementById("host-"+poolData[i].id);
-                if (row && row.parentElement.parentElement.id !== "running_rows"){
+                if (row && row.parentElement && row.parentElement.parentElement && row.parentElement.parentElement.id !== "running_rows"){
                     row.parentElement.remove();
                 }
 
@@ -309,7 +310,7 @@
                 } // end if
             } else { // unreachable
                 row = document.getElementById("host-"+poolData[i].id);
-                if (row && row.parentElement.parentElement.id !== "dead_rows"){
+                if (row && row.parentElement && row.parentElement.parentElement && row.parentElement.parentElement.id !== "dead_rows"){
                     row.parentElement.remove();
                 }
 
