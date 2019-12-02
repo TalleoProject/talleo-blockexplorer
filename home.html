@@ -130,7 +130,7 @@
     // Current page handlers (whe should know lastMinedBlockHeader)
     currentPage = {
         destroy: function () {
-            if (xhrGetCurrentHeight) xhrGetCurrentHeight.abort();
+            if (xhrGetCurrentMinedBlock) xhrGetCurrentMinedBlock.abort();
             if (xhrGetLastMinedBlockDetails) xhrGetLastMinedBlockDetails.abort();
             if (xhrGetLastBlocks) xhrGetLastBlocks.abort();
             if (xhrGetTxPool) xhrGetTxPool.abort();
@@ -212,29 +212,37 @@
         $('#'+servId).attr('data-content', '<pre>'+seedInfo+'</pre>');
     }
 
-    var xhrGetCurrentHeight;
+    var xhrGetCurrentMinedBlock;
     // get last block template (current mining block)
     function getCurrentMinedBlock() {
-        if (xhrGetCurrentHeight) xhrGetCurrentHeight.abort();
-        xhrGetCurrentHeight = $.ajax({
-             url: api + '/getinfo',
-             method: "GET",
-             dataType: 'json',
-             cache: 'false'
+        if (xhrGetCurrentMinedBlock) xhrGetCurrentMinedBlock.abort();
+        xhrGetCurrentMinedBlock = $.ajax({
+            url: api + '/json_rpc',
+            method: "POST",
+            data: JSON.stringify({
+                jsonrpc: "2.0",
+                id: "2",
+                method: "getblocktemplate",
+                params: {
+                    reserve_size: 0,
+                    wallet_address: "TA4yACzMYuFYq7V6xVAWYHeS39jQ8w4mKRowpY6NskGuS1rZpjcWuCpdeCypwUCJrK9mGqVW9o1pY2EG3HW7BZkR2YRcc4YNa"
+                }
+            }),
+            dataType: 'json',
+            cache: 'false'
         })
             .done(function (data) {
-                if (data.hasOwnProperty('difficulty')) {
-                    updateText('networkHashrate', getReadableHashRateString(data.difficulty / coinDifficultyTarget));
-                    $('#networkHashrate').attr('data-globalHR', (data.difficulty / coinDifficultyTarget).toString());
-                    updateText('nextDifficulty', data.difficulty.toString());
-                    $('#blockchainHeight').attr('data-height', data.network_height);
-                    updateText('blockchainHeight', data.network_height);
+                if (data.hasOwnProperty('result')) {
+                    let currentMinedBlock = data.result;
+                    updateText('networkHashrate', getReadableHashRateString(currentMinedBlock.difficulty / coinDifficultyTarget));
+                    updateText('nextDifficulty', currentMinedBlock.difficulty.toString());
+                    updateText('blockchainHeight', currentMinedBlock.height);
                 } else {
                     showalert('alert-danger','Core error : ',data.error.message);
                     $('#loading').hide();
                 }
             })
-            .fail(function (xhrGetCurrentHeight, textStatus) {
+            .fail(function (xhrGetCurrentMinedBlock, textStatus) {
                 if (textStatus != "abort") {
                     showalert('alert-danger','Request error : ',textStatus);
                     $('#loading').hide();

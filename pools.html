@@ -114,6 +114,9 @@
     // todo : sortable columns on array
     currentPage = {
         destroy: function(){
+            if (xhrGetCurrentMinedBlock) {
+                xhrGetCurrentMinedBlock.abort();
+            }
             if (xhrGetCurrentPoolStat) {
                 xhrGetCurrentPoolStat.abort();
             }
@@ -268,7 +271,7 @@
 
                 } else { //synced
                     nbPoolOk += 1;
-                    totalHeight += height;
+                    totalHeight = height > totalHeight ? height : totalHeight;
                     totalHashrate += poolData[i].data.pool.hashrate;
                     totalMiners += miners;
                     totalLastFound = poolData[i].data.pool.lastBlockFound > totalLastFound ? poolData[i].data.pool.lastBlockFound : totalLastFound;
@@ -385,31 +388,41 @@
         return totalPending;
     }
 
-    var xhrGetCurrentHeight;
+    var xhrGetCurrentMinedBlock;
     // get last block template (current mining block)
     function getCurrentMinedBlock() {
-        if (xhrGetCurrentHeight) xhrGetCurrentHeight.abort();
-        xhrGetCurrentHeight = $.ajax({
-            url: api + '/getinfo',
-            method: "GET",
+        if (xhrGetCurrentMinedBlock) xhrGetCurrentMinedBlock.abort();
+        xhrGetCurrentMinedBlock = $.ajax({
+            url: api + '/json_rpc',
+            method: "POST",
+            data: JSON.stringify({
+                jsonrpc: "2.0",
+                id: "2",
+                method: "getblocktemplate",
+                params: {
+                    reserve_size: 0,
+                    wallet_address: "TA4yACzMYuFYq7V6xVAWYHeS39jQ8w4mKRowpY6NskGuS1rZpjcWuCpdeCypwUCJrK9mGqVW9o1pY2EG3HW7BZkR2YRcc4YNa"
+                }
+            }),
             dataType: 'json',
             cache: 'false'
         })
             .done(function (data) {
-                if (data.hasOwnProperty('difficulty')) {
-                    updateText('networkHashrate', getReadableHashRateString(data.difficulty / coinDifficultyTarget));
-                    $('#networkHashrate').attr('data-globalHR', (data.difficulty / coinDifficultyTarget).toString());
-                    updateText('nextDifficulty', data.difficulty.toString());
-                    $('#blockchainHeight').attr('data-height', data.network_height);
-                    updateText('blockchainHeight', data.network_height);
+                if (data.hasOwnProperty('result')) {
+                    let currentMinedBlock = data.result;
+                    updateText('networkHashrate', getReadableHashRateString(currentMinedBlock.difficulty / coinDifficultyTarget));
+                    $('#networkHashrate').attr('data-globalHR', (currentMinedBlock.difficulty / coinDifficultyTarget).toString());
+                    updateText('nextDifficulty', currentMinedBlock.difficulty.toString());
+                    $('#blockchainHeight').attr('data-height', currentMinedBlock.height);
+                    updateText('blockchainHeight', currentMinedBlock.height);
                 } else {
                     showalert('alert-danger','Core error : ',data.error.message);
                     $('#loading').hide();
                 }
             })
-            .fail(function (xhrGetCurrentHeight, textStatus) {
+            .fail(function (xhrGetCurrentMinedBlock, textStatus) {
                 if (textStatus != "abort") {
-                    showalert('alert-danger','Can\'t connect to api : ',textStatus);
+                    showalert('alert-danger','Request error : ',textStatus);
                     $('#loading').hide();
                 }
             });
