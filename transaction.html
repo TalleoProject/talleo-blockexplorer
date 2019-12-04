@@ -142,8 +142,12 @@
         destroy: function(){
         },
         update: function(){
-            if ((typeof lastMinedBlockHeader !== 'undefined') && parseInt(lastMinedBlockHeader.block_header.height, 10) !== parseInt($('#blockchainHeight').attr('data-height'), 10)) {
-
+            if (typeof lastMinedBlockHeader !== 'undefined') {
+                height = parseInt(lastMinedBlockHeader.block_header.height, 10);
+                height -= parseInt(document.getElementById('block.height').innerHTML, 10);
+                if (height >= 0) {
+                    updateText('block.confirm', height);
+                }
             }
         }
     };
@@ -187,6 +191,13 @@
                     updateText('block.height', block.height);
                     updateText('block.timestamp', formatDate(block.timestamp));
                     updateText('block.height', block.height);
+                    if (typeof lastMinedBlockHeader !== 'undefined') {
+                        height = parseInt(lastMinedBlockHeader.block_header.height, 10);
+                        height -= block.height;
+                        if (height >= 0) {
+                            updateText('block.confirm', height);
+                        }
+                    }
                     renderInputs(inputs);
                     renderOutputs(outputs);
                     $('#loading').hide();
