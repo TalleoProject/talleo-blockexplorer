@@ -115,7 +115,7 @@
         }
     };
 
-    let xhrGetTransaction;
+    var xhrGetTransaction;
     function renderTransaction(){
         if (xhrGetTransaction) xhrGetTransaction.abort();
         xhrGetTransaction = $.ajax({
