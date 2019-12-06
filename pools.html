@@ -38,13 +38,14 @@
         <table id="running_table" class="table table-hover table-sm">
             <thead>
             <tr class="thead-dark">
-                <th colspan="9">Running pools</th>
+                <th colspan="10">Running pools</th>
             </tr>
             <tr>
                 <th>Address</th>
                 <th><i class="fa fa-bars"></i> Height</th>
                 <th><i class="fas fa-tachometer-alt"></i> Hashrate</th>
                 <th><i class="fas fa-users"></i> Miners</th>
+                <th><i class="fa fa-gavel"></i> Workers</th>
                 <th><i class="far fa-clock"></i> Last mining block</th>
                 <th><i class="fas fa-cubes"></i> Pending blocks</th>
                 <th><i class="fa fa-th-large"></i> Total blocks</th>
@@ -59,6 +60,7 @@
                 <td><span id=totalHeight></span></td>
                 <td><span id=totalHashrate></span> <span id=averageWindow></span></td>
                 <td><span id=totalMiners></span></td>
+                <td><span id=totalWorkers></span></td>
                 <td><span id=totalLastFound></span></td>
                 <td><span id=totalPending></span></td>
                 <td><span id=totalBlocks></span></td>
@@ -75,13 +77,14 @@
         <table id="out_table" class="table table-hover table-sm d-none">
         <thead>
         <tr class="thead-light">
-            <th colspan="9">Out of order pools (not synced or stucked)</th>
+            <th colspan="10">Out of order pools (not synced or stucked)</th>
         </tr>
         <tr>
             <th>Address</th>
             <th><i class="fa fa-bars"></i> Height</th>
             <th><i class="fas fa-tachometer-alt"></i> Hashrate</th>
             <th><i class="fas fa-users"></i> Miners</th>
+            <th><i class="fa fa-gavel"></i> Workers</th>
             <th><i class="far fa-clock"></i> Last mining block</th>
             <th><i class="fas fa-cubes"></i> Pending blocks</th>
             <th><i class="fa fa-th-large"></i> Total blocks</th>
@@ -170,7 +173,7 @@
                         method: "GET",
                         dataType: 'json',
                         cache: 'false',
-                        timeout: 7500,
+                        timeout: 9000,
                         poolId: poolList[i].id,
                         poolUrl: poolList[i].url,
                         poolStatus: poolList[i].status,
@@ -208,6 +211,7 @@
 
     function renderPoolData(poolData){
         let totalMiners = 0;
+        let totalWorkers = 0;
         let totalHashrate = 0;
         let totalHeight = 0;
         let nbPoolOk = 0;
@@ -224,12 +228,22 @@
             st = poolData[i].status; // false if an error occurs, get error in "error" ans if disabled in config
             if (st){
                 height = poolData[i].data.network.height;
-                hashrate = getReadableHashRateString(poolData[i].data.pool.hashrate);
-                poolCoeff=poolData[i].data.pool.hashrate/$('#networkHashrate').attr('data-globalHR');
-                miners = poolData[i].data.pool.miners;
-                blocTimeAgo = poolData[i].data.pool.lastBlockFound ? jQuery.timeago(new Date(parseInt(poolData[i].data.pool.lastBlockFound))) : 'Never';
+                solohashrate = poolData[i].data.pool.solo_hashrate || 0;
+                hashrate = getReadableHashRateString(poolData[i].data.pool.hashrate + solohashrate);
+                poolCoeff= (poolData[i].data.pool.hashrate + solohashrate)/$('#networkHashrate').attr('data-globalHR');
+                solominers = parseInt(poolData[i].data.pool.solo_miners || 0);
+                miners = poolData[i].data.pool.miners + solominers;
+                soloworkers = parseInt(poolData[i].data.pool.solo_workers || 0);
+                workers = poolData[i].data.pool.workers + soloworkers;
+                solo_lastblock = parseInt(poolData[i].data.pool.solo_lastBlockFound || 0);
+                lastblock = parseInt(poolData[i].data.pool.lastBlockFound || 0);
+                if (solo_lastblock > lastblock){
+                    lastblock = solo_lastblock;
+                }
+                blocTimeAgo = lastblock ? jQuery.timeago(new Date(lastblock)) : 'Never';
                 pending = calculatePending(poolData[i].data);
-                blocks = poolData[i].data.pool.totalBlocks;
+                solo_blocks = parseInt(poolData[i].data.pool.solo_totalBlocks || 0);
+                blocks = poolData[i].data.pool.totalBlocks + solo_blocks;
                 donation = calculateDonations(poolData[i].data);
                 fee = calculateTotalFee(poolData[i].data);
                 flag = poolData[i].flag != undefined ? '<img class="flag" src="images/flags/'+poolData[i].flag.toLowerCase()+'.svg">' : '';
@@ -247,6 +261,7 @@
                         updateText('height-'+poolData[i].id, height);
                         updateText('hashrate-'+poolData[i].id, hashrate);
                         updateText('miners-'+poolData[i].id, miners);
+                        updateText('workers-'+poolData[i].id, workers);
                         updateText('lastBlockFound-'+poolData[i].id, blocTimeAgo);
                         updateText('pending-'+poolData[i].id, pending);
                         updateText('blocks-'+poolData[i].id, blocks);
@@ -260,6 +275,7 @@
                             '<td id=height-' + poolData[i].id + '>' + height + '</td>' +
                             '<td id=hashrate-' + poolData[i].id + '>' + hashrate + '</td>' +
                             '<td id=miners-' + poolData[i].id + '>' + miners + '</td>' +
+                            '<td id=workers-' + poolData[i].id + '>' + workers + '</td>' +
                             '<td id=lastBlockFound-' + poolData[i].id + '>' + blocTimeAgo + '</td>' +
                             '<td id=pending-' + poolData[i].id + '>' + pending + '</td>' +
                             '<td id=blocks-' + poolData[i].id + '>' + blocks + '</td>' +
@@ -274,6 +290,7 @@
                     totalHeight = height > totalHeight ? height : totalHeight;
                     totalHashrate += poolData[i].data.pool.hashrate;
                     totalMiners += miners;
+                    totalWorkers += workers;
                     totalLastFound = poolData[i].data.pool.lastBlockFound > totalLastFound ? poolData[i].data.pool.lastBlockFound : totalLastFound;
                     totalPending += pending;
                     totalBlocks += blocks;
@@ -290,6 +307,7 @@
                     updateText('height-'+poolData[i].id, height);
                     updateText('hashrate-'+poolData[i].id, hashrate);
                     updateText('miners-'+poolData[i].id, miners);
+                    updateText('workers-'+poolData[i].id, workers);
                     updateText('lastBlockFound-'+poolData[i].id, blocTimeAgo);
                     updateText('pending-'+poolData[i].id, pending);
                     updateText('blocks-'+poolData[i].id, blocks);
@@ -302,6 +320,7 @@
                         '<td id=height-' + poolData[i].id + '>' + height + '</td>' +
                         '<td id=hashrate-' + poolData[i].id + '>' + hashrate + '</td>' +
                         '<td id=miners-' + poolData[i].id + '>' + miners + '</td>' +
+                        '<td id=workers-' + poolData[i].id + '>' + workers + '</td>' +
                         '<td id=lastBlockFound-' + poolData[i].id + '>' + blocTimeAgo + '</td>' +
                         '<td id=pending-' + poolData[i].id + '>' + pending + '</td>' +
                         '<td id=blocks-' + poolData[i].id + '>' + blocks + '</td>' +
@@ -338,6 +357,7 @@
         }
         updateText('totalHeight', parseInt($('#blockchainHeight').attr('data-height')));
         updateText('totalMiners', totalMiners);
+        updateText('totalWorkers', totalWorkers);
         updateText('totalHashrate', getReadableHashRateString(totalHashrate));
         updateText('totalLastFound', totalLastFound ? jQuery.timeago(new Date(parseInt(totalLastFound))) : 'Never');
         updateText('totalPending',totalPending);
@@ -382,6 +402,15 @@
             if((i+1) % 2 == 0){
                 if(data.pool.blocks[i] > ($('#blockchainHeight').attr('data-height') - data.config.depth)){
                     totalPending++;
+                }
+            }
+        }
+        if (data.pool.solo_blocks){
+            for(let i= 0; i < data.pool.solo_blocks.length; i++) {
+                if((i+1) % 2 == 0){
+                    if(data.pool.solo_blocks[i] > ($('#blockchainHeight').attr('data-height') - data.config.depth)){
+                        totalPending++;
+                    }
                 }
             }
         }
