@@ -9,7 +9,9 @@ const transactionExplorer = "?hash={id}#transaction";
 // poolList ["id","visible", "url", "api", "enabled"]
 const poolList = [
     {"id":1,"visible":true,"url":"https://pool.talleo.org","api":"https://pool.talleo.org:7112","status":true,"flag":"FR","loc":"FRANCE"},
-    {"id":2,"visible":true,"url":"https://tlo-pool.raasu.org","api":"https://tlo-pool.raasu.org:7119","status":true,"flag":"FI","loc":"FINLAND"}
+    {"id":2,"visible":true,"url":"https://pool.raasu.org","api":"https://pool.raasu.org:7119","status":true,"flag":"FI","loc":"FINLAND"},
+    {"id":3,"visible":true,"url":"https://tlo.cryptonote.club","api":"https://tlo.cryptonote.club:8199","status":true,"flag":"DE","loc":"GERMANY"},
+    {"id":4,"visible":true,"url":"https://funwithcrypto.tk/tlo","api":"https://funwithcrypto.tk:8127","status":true,"flag":"CA","loc":"CANADA"}
 ];
 const seedsNodes = [
     {"id":"tlo2","url":"https://explorer.talleo.org/api"},
