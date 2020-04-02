@@ -15,7 +15,7 @@
 </head>
 <body>
     <header class="navbar navbar-expand-md navbar-dark fixed-top">
-        <a class="navbar-brand" href="#" data-page="home.html">
+        <a class="navbar-brand" href="./#" data-page="home.html">
             <img class="logo-small img-fluid" src="images/64x64.png" alt="Talleo logo">
             Talleo Explorer
         </a>
@@ -26,34 +26,34 @@
         <div class="collapse navbar-collapse" id="navbarToggler">
             <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link hot_link" href="#" data-page="home.html"><i class="fa fa-home"></i>
+                    <a class="nav-link hot_link" href="./#" data-page="home.html"><i class="fa fa-home"></i>
                         Home<span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link hot_link" href="#blockchain" data-page="blockchain.html"><i
+                    <a class="nav-link hot_link" href="./#blockchain" data-page="blockchain.html"><i
                             class="fa fa-cubes"></i> Blockchain</a>
                 </li>
                 <!--<li class="nav-item">-->
-                    <!--<a class="nav-link hot_link" href="#market" data-page="market.html"><i class="fas fa-th-list"></i>-->
+                    <!--<a class="nav-link hot_link" href="./#market" data-page="market.html"><i class="fas fa-th-list"></i>-->
                         <!--Market</a>-->
                 <!--</li>-->
                 <li class="nav-item">
-                    <a class="nav-link hot_link" href="#pools" data-page="pools.html"><i class="fas fa-tasks"></i> Pools</a>
+                    <a class="nav-link hot_link" href="./#pools" data-page="pools.html"><i class="fas fa-tasks"></i> Pools</a>
                 </li>
                 <!--<li class="nav-item">-->
-                    <!--<a class="nav-link hot_link" href="#stats" data-page="stats.html"><i class="fas fa-chart-area"></i>-->
+                    <!--<a class="nav-link hot_link" href="./#stats" data-page="stats.html"><i class="fas fa-chart-area"></i>-->
                         <!--Statistics</a>-->
                 <!--</li>-->
                 <li style="display:none;">
-                    <a class="hot_link" href="#block" data-page="block.html">block
+                    <a class="hot_link" href="./#block" data-page="block.html">block
                     </a>
                 </li>
                 <li style="display:none;">
-                    <a class="hot_link" href="#transaction" data-page="transaction.html" >transaction
+                    <a class="hot_link" href="./#transaction" data-page="transaction.html" >transaction
                     </a>
                 </li>
                 <li style="display:none;">
-                    <a class="hot_link" href="#pool_transaction" data-page="pool_transaction.html">pool transaction
+                    <a class="hot_link" href="./#pool_transaction" data-page="pool_transaction.html">pool transaction
                     </a>
                 </li>
             </ul>
@@ -166,7 +166,7 @@
         $('#loading').show();
         if (xhrPageLoading) xhrPageLoading.abort();
         $('.hot_link').parent().removeClass('active');
-        $link = $('a.hot_link[href="' + (window.location.hash || '#') + '"]');
+        $link = $('a.hot_link[href="./' + (window.location.hash || '#') + '"]');
         $link.parent().addClass('active');
         page = $link.data('page');
         xhrPageLoading = $.ajax({
