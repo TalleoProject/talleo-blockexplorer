@@ -123,6 +123,8 @@
     </div>
 </div>
 <script>
+    var fetch;
+
     currentPage = {
         init: function (){
             if(typeof poolUpdate !== 'undefined') {
@@ -140,6 +142,9 @@
             renderTransaction();
         },
         destroy: function(){
+            if(typeof fetch !== 'undefined') {
+                clearTimeout(fetch);
+            }
         },
         update: function(){
             if (typeof lastMinedBlockHeader !== 'undefined') {
@@ -171,6 +176,9 @@
         })
             .done(function (data) {
 
+                if (data.hasOwnProperty('error')) {
+                    fetch = setTimeout(renderTransaction, 15000);
+                }
                 if (data.hasOwnProperty('result')) {
                     transaction = data.result.txDetails;
                     inputs = data.result.tx.vin;

@@ -1,7 +1,6 @@
 #!/bin/bash
-issued_coin=$(curl -s https://bittorium.org/Blockexplorer/get_generated_coins | jq -r '.alreadyGeneratedCoins')
-echo "HTTP/1.0 200 OK"
+issued_coin=$(curl -s https://explorer.talleo.org/api/get_generated_coins | jq -r '.alreadyGeneratedCoins')
 echo "Content-type: text/plain"
 echo ""
-awk "BEGIN {printf \"%.8f\n\", $issued_coin/180000000}"
+awk "BEGIN {printf \"%.8f\n\", $issued_coin/300000000}"
 exit 0
