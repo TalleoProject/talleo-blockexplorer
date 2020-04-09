@@ -48,6 +48,11 @@
                     </span>
                 </p>
                 <p>
+                    <span data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Circulating coins">
+                        <i class="fas fa-sync-alt"></i> Circulating Supply: <span id="circulatingSupply"></span>
+                    </span>
+                </p>
+                <p>
                     <span data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Percentage of overall mined coins">
                         <i class="fas fa-university"></i> Total emission: <span id="supplypercent"></span>
                     </span>
@@ -135,6 +140,7 @@
             if (xhrGetLastBlocks) xhrGetLastBlocks.abort();
             if (xhrGetTxPool) xhrGetTxPool.abort();
             if (xhrgetSeedsStatus) xhrgetSeedsStatus.abort();
+            if (xhrGetCirculatingSupply) xhrGetCirculatingSupply.abort();
             if(typeof txPulse !== 'undefined') {
                 clearTimeout(txPulse);
             }
@@ -158,6 +164,7 @@
                 getLastMinedBlockDetails();
                 getBlocks();
                 getTxPool();
+                getCirculatingSupply();
             }
             getSeedsStatus();
         }
@@ -318,6 +325,23 @@
                 if (textStatus != "abort") {
                     showalert('alert-danger','Request error : ',textStatus);
                     $('#loading').hide();
+                }
+            });
+    }
+
+    var xhrGetCirculatingSupply;
+    // Get circulating supply from official block explorer
+    function getCirculatingSupply() {
+        if (xhrGetCirculatingSupply) xhrGetCirculatingSupply.abort();
+        xhrGetCirculatingSupply = $.ajax({
+            url: 'https://explorer.talleo.org/api/get_circulating_coins',
+            method: "GET",
+            dataType: 'json',
+            cache: 'false'
+        })
+            .done(function (data) {
+                if (data.hasOwnProperty('circulatingCoins')) {
+                    updateText('circulatingSupply', shortenLargeNumber(data.circulatingCoins / coinUnits, 6, 0));
                 }
             });
     }
