@@ -225,7 +225,7 @@
                 poolData[i] = {"id": poolList[i].id, "url": poolList[i].url, "status": false, "error": "Not reachable"};
             }
 
-            st = poolData[i].status; // false if an error occurs, get error in "error" ans if disabled in config
+            st = poolData[i].status; // false if an error occurs or disabled in config, get error in "error"
             if (st){
                 height = poolData[i].data.network.height;
                 solohashrate = poolData[i].data.pool.solo_hashrate || 0;
