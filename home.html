@@ -53,11 +53,14 @@
                     </span>
                 </p>
                 <p>
+                    <span data-toggle-"popover" data-trigger="hover" data-placement="top" data-content="Market capitalization">
+                        <i class="far fa-money-bill-alt"></i> Market Cap: <span id="marketCap"></span>
+                </p>
+                <p>
                     <span data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Percentage of overall mined coins">
                         <i class="fas fa-university"></i> Total emission: <span id="supplypercent"></span>
                     </span>
                 </p>
-
                 <p>
                     <span data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Already transactions done">
                     <i class="fas fa-exchange-alt"></i> Total transactions: <span id="alreadyGeneratedTransactions"></span>
@@ -141,6 +144,7 @@
             if (xhrGetTxPool) xhrGetTxPool.abort();
             if (xhrgetSeedsStatus) xhrgetSeedsStatus.abort();
             if (xhrGetCirculatingSupply) xhrGetCirculatingSupply.abort();
+            if (xhrGetPrice) xhrGetPrice.abort();
             if(typeof txPulse !== 'undefined') {
                 clearTimeout(txPulse);
             }
@@ -330,6 +334,7 @@
     }
 
     var xhrGetCirculatingSupply;
+    var xhrGetPrice;
     // Get circulating supply from official block explorer
     function getCirculatingSupply() {
         if (xhrGetCirculatingSupply) xhrGetCirculatingSupply.abort();
@@ -342,6 +347,16 @@
             .done(function (data) {
                 if (data.hasOwnProperty('circulatingCoins')) {
                     updateText('circulatingSupply', shortenLargeNumber(data.circulatingCoins / coinUnits, 6, 0));
+
+                    xhrGetPrice = $.ajax({
+                        url: 'https://api.coinlore.com/api/ticker/?id=43092',
+                        method: "GET",
+                        dataType: 'json',
+                        cache: 'false'
+                    })
+                        .done(function (data2) {
+                            $('#marketCap').html((data.circulatingCoins / coinUnits * parseFloat(data2[0]['price_usd'])).toFixed(2) + ' USD');
+                        });
                 }
             });
     }
